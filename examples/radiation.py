@@ -1,5 +1,5 @@
 import numpy as np
-import atomic
+import atomic_neu.atomic as atomic
 import matplotlib.pyplot as plt
 
 Element = 'carbon'
@@ -7,7 +7,7 @@ ad = atomic.element(Element)
 eq = atomic.CoronalEquilibrium(ad)
 
 temperature = np.logspace(0, 3, 50)
-electron_density = 1e19
+electron_density = 1e20
 y = eq.ionisation_stage_distribution(temperature, electron_density)
 
 rad = atomic.Radiation(y, neutral_fraction=1e-1, impurity_fraction=2e-2)
@@ -22,7 +22,7 @@ lines = rad.plot()
 
 if customize:
     plt.ylabel(r'$P/n_\mathrm{i} n_\mathrm{e}\ [\mathrm{W m^3}]$')
-    plt.ylim(ymin=1e-35)
+    # plt.ylim(ymin=1e-35)
 
     # annotation
     s = '$n_0/n_\mathrm{e}$\n'
