@@ -109,11 +109,13 @@ def time_dependent_z(solution, times):
 
 def Lz_radiated_power(rate_equations, taus):
     ax = plt.gca()
-    for tau in taus:
+    linestyles = ['dashed', 'dotted', 'dashdot',
+                  (0,(3,1)), (0,(1,1)), (0, (3, 1, 1, 1, 1, 1))]
+    for i, tau in enumerate(taus):
         y = rt.solve(times, temperature, density, tau)
         rad = atomic.Radiation(y.abundances[-1])
         ax.loglog(temperature, rad.specific_power['total'],
-                color='black', ls='--')
+                color='black', ls=linestyles[i])
 
     annotate_lines(['$10^{%d}$' % i for i in np.log10(taus * rt.density)])
 
@@ -138,10 +140,10 @@ if __name__ == '__main__':
     taus = np.logspace(13,18,6)/density
 
     plt.figure(1); plt.clf()
-    # plt.xlim(xmin=0.2, xmax=1e4)
-    # plt.ylim(ymin=1e-35, ymax=1e-30)
+    plt.xlim(xmin=0.2, xmax=1e4)
+    plt.ylim(ymin=1e-35, ymax=1e-30)
     Lz_radiated_power(rt, taus)
-    plt.text(2e3,3e-31,r'$n_e \tau \; [\mathrm{m}^{-3} \, \mathrm{s}]$')
+    plt.text(1.7e3,2.5e-31,r'$n_e \tau \; [\mathrm{m}^{-3} \, \mathrm{s}]$')
     plt.draw()
 
 #    plt.figure(2); plt.clf()
