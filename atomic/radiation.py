@@ -16,7 +16,8 @@ class Radiation(object):
         neutral_fraction: fraction of neutral hydrogen, for cx_power.
             n_n = n_e * neutral_fraction
     """
-    def __init__(self, ionisation_stage_distribution, impurity_fraction=1., neutral_fraction=0.):
+    def __init__(self, ionisation_stage_distribution, impurity_fraction=1.,
+            neutral_fraction=0.):
         self.y = ionisation_stage_distribution
         self.atomic_data = ionisation_stage_distribution.atomic_data
 
@@ -56,7 +57,8 @@ class Radiation(object):
         """
         power_coeffs = {}
         for key in ['line_power', 'continuum_power', 'cx_power']:
-            power_coeffs[key] = self.atomic_data.coeffs.get(key, ZeroCoefficient())
+            power_coeffs[key] = self.atomic_data.coeffs.get(key,
+                    ZeroCoefficient())
         return power_coeffs
 
     def _compute_power(self):
@@ -77,7 +79,8 @@ class Radiation(object):
 
         for k in range(self.atomic_data.nuclear_charge):
             for key in list(radiation_power.keys()):
-                coeff = power_coeffs[key](k, self.temperature, self.electron_density)
+                coeff = power_coeffs[key](k, self.temperature,
+                        self.electron_density/1e6)
 
                 if key in ['continuum_power', 'line_power']:
                     if key in ['continuum_power']:
@@ -90,7 +93,8 @@ class Radiation(object):
                 radiation_power[key][k] = scale * coeff
 
         # compute the total power
-        radiation_power['total'] = reduce(lambda x, y: x+y, list(radiation_power.values()))
+        radiation_power['total'] = reduce(lambda x,y: x+y,
+                list(radiation_power.values()))
 
         # sum over all ionisation stages
         for key in list(radiation_power.keys()):
@@ -111,7 +115,7 @@ class Radiation(object):
         else:
             xscale = 'log'
 
-        ax = kwargs.get('ax', plt.gca())  # gca is get current axes
+        ax = kwargs.get('ax', plt.gca()) # gca is get current axes
         x = kwargs.get('x', self.temperature)
 
         lines = []
@@ -125,7 +129,6 @@ class Radiation(object):
         ax.set_ylabel(r'$P\ [\mathrm{W/m^3}]$')
 
         self._decorate_plot(ax, lines)
-        plt.legend()
         plt.draw_if_interactive()
 
         return lines
@@ -136,7 +139,7 @@ class Radiation(object):
             ax: the axes
             lines: different ax.semilogy (plots I suppose)?
         """
-        alpha = 0.5  # transparency for fancy filling
+        alpha = 0.5 # transparency for fancy filling
         min_ = ax.get_ylim()[0]
         baseline = min_ * np.ones_like(self.temperature)
 
@@ -149,9 +152,9 @@ class Radiation(object):
     def _get_label(self, key):
         """Called by plot"""
         labels = {
-            'continuum_power': 'continuum',
-            'line_power': 'line',
-            'cx_power': 'charge-exchange',
-            'total': 'total',
+            'continuum_power' : 'continuum',
+            'line_power' : 'line',
+            'cx_power' : 'charge-exchange',
+            'total' : 'total',
         }
         return labels.get(key, None)

@@ -4,7 +4,6 @@ import scipy.integrate
 from .abundance import FractionalAbundance
 from .collisional_radiative import CollRadEquilibrium
 
-
 class RateEquations(object):
     """
     Attributes:
@@ -40,12 +39,11 @@ class RateEquations(object):
         """Start with the ions all in the +0 state at t=0."""
         y = np.zeros(self.y_shape)
         y[0] = np.ones_like(self.temperature)
-        self.y = y.ravel()  # functions like MMA's Flatten[] here
+        self.y = y.ravel() #functions like MMA's Flatten[] here
         self.dydt = np.zeros(self.y_shape)
 
     def _init_coeffs(self):
-        """
-        Initialises ionisation and recombination coefficents S and alpha.
+        """Initialises ionisation and recombination coefficents S and alpha.
 
         Note that S[-1] and alpha[-1] will both be arrays of zeros.
         (With length of self.temperature)
@@ -78,7 +76,7 @@ class RateEquations(object):
         # rate coeffients to specific charge states, then switch it back
         # to a 1D array so that odeint can handle it: y0 must be 1D.
         y = y_.reshape(self.y_shape)
-        current = slice(1, -1)  # everything but the first and last
+        current = slice(1, -1) # everything but the first and last
         upper = slice(2, None)
         lower = slice(None, -2)
         dydt[current]  = y[lower] * S[lower]
@@ -86,10 +84,10 @@ class RateEquations(object):
         dydt[current] -= y[current] * S[current]
         dydt[current] -= y[current] * alpha_to[lower]
 
-        current, upper = 0, 1  # neutral and single ionised state
+        current, upper = 0, 1 # neutral and single ionised state
         dydt[current] = y[upper] * alpha_to[current] - y[current] * S[current]
 
-        current, lower = -1, -2  # fully stripped and 1 electron state
+        current, lower = -1, -2 # fully stripped and 1 electron state
         dydt[current] = y[lower] * S[lower] - y[current] * alpha_to[lower]
         dydt *= ne
 
@@ -107,19 +105,18 @@ class RateEquations(object):
         """
         self._set_temperature_and_density_grid(temperature, density)
         self._set_initial_conditions()
-        solution = scipy.integrate.odeint(self.derivs, self.y, time)
+        solution  = scipy.integrate.odeint(self.derivs, self.y, time)
 
         abundances = []
         for s in solution.reshape(time.shape + self.y_shape):
             abundances.append(FractionalAbundance(self.atomic_data, s, self.temperature,
-                              self.density))
+                self.density))
 
         return RateEquationsSolution(time, abundances)
 
 
 class RateEquationsWithDiffusion(RateEquations):
-    """
-    Represents a solution of the rate equations with diffusion
+    """ Represents a solution of the rate equations with diffusion
     out of every charge state with a time constant of tau,
     and fueling of neutrals so that the population is constant in time.
     """
@@ -130,7 +127,7 @@ class RateEquationsWithDiffusion(RateEquations):
 
         dydt -= y/tau
         dydt = dydt.reshape(self.y_shape)
-        dydt[0] += 1/tau  # ensures stable population of 1
+        dydt[0] += 1/tau # ensures stable population of 1
         return dydt.ravel()
 
     def solve(self, time, temperature, density, diffusion_time):
@@ -158,7 +155,8 @@ class RateEquationsSolution(object):
         equilibrum.
         """
         eq = CollRadEquilibrium(self.atomic_data)
-        y_collrad = eq.ionisation_stage_distribution(self.temperature, self.density)
+        y_collrad = eq.ionisation_stage_distribution(self.temperature,
+                self.density)
 
         self.y_collrad = y_collrad
 
@@ -169,13 +167,13 @@ class RateEquationsSolution(object):
         return self.abundances[key]
 
     def at_temperature(self, temperature_value):
-        """
-        Finds the time evolution of ionisation states at fixed temperature.
+        """Finds the time evolution of ionisation states at fixed temperature.
 
         The temperature is the next one in self.temperature
             that is larger than temperature_value.
         """
-        temperature_index = np.searchsorted(self.temperature, temperature_value)
+        temperature_index = np.searchsorted(self.temperature,
+                temperature_value)
 
         return np.array([y.y[:, temperature_index] for y in self.abundances])
 
@@ -201,6 +199,7 @@ class RateEquationsSolution(object):
         return tau_ss
 
     def ensemble_average(self):
+
         tau = self.times[:, np.newaxis, np.newaxis]
         y = [y.y for y in self.abundances]
         # y is a list of np.arrays. len(y) is nTimes, and
@@ -228,7 +227,7 @@ class RateEquationsSolution(object):
         new_concentrations = []
         for y in concentrations:
             f = FractionalAbundance(self.atomic_data, y, self.temperature,
-                                    self.density)
+                    self.density)
             new_concentrations.append(f)
         return self.__class__(times, new_concentrations)
 
