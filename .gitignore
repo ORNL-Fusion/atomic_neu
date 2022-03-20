@@ -151,3 +151,9 @@ build/temp\.macosx-10\.7-x86_64-3\.6/build/src\.macosx-10\.7-x86_64-3\.6/src/for
 build/temp\.macosx-10\.7-x86_64-3\.6/src/_xxdata_11module\.o\.d
 
 build/temp\.macosx-10\.7-x86_64-3\.6/src/_xxdata_15module\.o\.d
+build/src.macosx-10.9-x86_64-3.9
+atomic/_xxdata_11.cpython-39-darwin.so
+atomic/_xxdata_15.cpython-39-darwin.so
+build/src.macosx-11.6-x86_64-2.7
+build/temp.macosx-10.9-x86_64-3.9
+.DS_Store
