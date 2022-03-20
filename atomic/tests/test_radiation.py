@@ -1,5 +1,5 @@
 import unittest
-import atomic
+import atomic_neu.atomic as atomic
 import numpy as np
 
 class TestRadiation(unittest.TestCase):

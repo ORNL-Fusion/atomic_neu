@@ -1,5 +1,5 @@
 import unittest
-import atomic
+import atomic_neu.atomic as atomic
 
 class TestAdf11(unittest.TestCase):
     def setUp(self):
