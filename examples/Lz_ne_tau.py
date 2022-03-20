@@ -9,7 +9,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import atomic
+import atomic_neu.atomic as atomic
 
 
 class AnnotateRight(object):
@@ -81,12 +81,12 @@ class AnnotateRight(object):
             va = self.va
 
             self.axes.annotate(text, xy, xycoords='axes fraction',
-                               va=va, ha=ha, size='small')
+                va=va, ha=ha, size='small')
 
 
 def annotate_lines(texts, **kwargs):
     ax = kwargs.pop('ax', plt.gca())
-    AnnotateRight(ax.lines, texts)
+    AnnotateRight(ax.lines, texts, **kwargs)
 
 
 def time_dependent_z(solution, times):
@@ -109,18 +109,16 @@ def time_dependent_z(solution, times):
 
 def Lz_radiated_power(rate_equations, taus):
     ax = plt.gca()
-    f_imp = .9
-    f_neut = 0.0
     for tau in taus:
-        times = np.logspace(-7, np.log10(tau), 100)
         y = rt.solve(times, temperature, density, tau)
-        rad = atomic.Radiation(y.abundances[-1], impurity_fraction=f_imp, neutral_fraction=f_neut)
-        ax.loglog(temperature, rad.specific_power['total'], color='black', ls='--')
+        rad = atomic.Radiation(y.abundances[-1])
+        ax.loglog(temperature, rad.specific_power['total'],
+                color='black', ls='--')
 
     annotate_lines(['$10^{%d}$' % i for i in np.log10(taus * rt.density)])
 
-    rad_coron = atomic.Radiation(y.y_coronal, impurity_fraction=f_imp, neutral_fraction=f_neut)
-    ax.loglog(rate_equations.temperature, rad_coron.specific_power['total'], color='black')
+    power_collrad = atomic.Radiation(y.y_collrad).specific_power['total']
+    ax.loglog(rate_equations.temperature, power_collrad, color='black')
     AnnotateRight(ax.lines[-1:], ['$\infty$'])
 
     element = 'Carbon'
@@ -131,24 +129,23 @@ def Lz_radiated_power(rate_equations, taus):
 
 
 if __name__ == '__main__':
+    times = np.logspace(-7, 0, 100)
     temperature = np.logspace(np.log10(0.8), np.log10(3e3), 100)
     density = 1e19
-    elem = 'carbon'
 
-    rt = atomic.time_dependent_rates.RateEquationsWithDiffusion(atomic.element(elem))
-    taus = np.logspace(13, 18, 6)/density
+    rt = atomic.RateEquationsWithDiffusion(atomic.element('carbon'))
 
-    plt.figure(1)
-    plt.clf()
-    plt.xlim(xmin=0.2, xmax=1e4)
-    plt.ylim(ymin=1e-36, ymax=.5e-30)
+    taus = np.logspace(13,18,6)/density
+
+    plt.figure(1); plt.clf()
+    # plt.xlim(xmin=0.2, xmax=1e4)
+    # plt.ylim(ymin=1e-35, ymax=1e-30)
     Lz_radiated_power(rt, taus)
-    plt.text(2e3, 3e-31, r'$n_e \tau \; [\mathrm{m}^{-3} \, \mathrm{s}]$')
+    plt.text(2e3,3e-31,r'$n_e \tau \; [\mathrm{m}^{-3} \, \mathrm{s}]$')
     plt.draw()
 
-    # plt.figure(2)
-    # plt.clf()
-    # time_dependent_power(y, taus)
-    # plt.draw()
+#    plt.figure(2); plt.clf()
+#    time_dependent_power(y, taus)
+#    plt.draw()
 
     plt.show()

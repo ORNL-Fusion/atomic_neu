@@ -4,8 +4,8 @@ typical carbon content is n_c / n_e = 0.05
 import numpy as np
 import matplotlib.pyplot as plt
 
-import atomic
-from ensemble_average import annotate_lines
+import atomic_neu.atomic as atomic
+from atomic_neu.atomic.ensemble_average import annotate_lines
 
 
 def parabolic_profile(y0):
@@ -21,7 +21,7 @@ r, density = parabolic_profile(1e19)
 try:
     ad
 except NameError:
-    from atomic.pec import TransitionPool
+    from atomic_neu.atomic.pec import TransitionPool
     ad = atomic.element('argon')
     tp = TransitionPool.from_adf15('adas_data/pec/transport_llu#ar*.dat')
     ad = tp.filter_energy(2e3, 20e3, 'eV').create_atomic_data(ad)

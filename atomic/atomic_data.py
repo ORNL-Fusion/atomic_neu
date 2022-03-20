@@ -401,7 +401,7 @@ class RateCoefficient(object):
         Returns:
             c (array_like): log10(rate coefficent in [m3/s])
         """
-
+    
         Te, ne = np.broadcast_arrays(Te, ne)
         log_temperature = np.log10(Te)
         log_density = np.log10(ne)
