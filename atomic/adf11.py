@@ -92,13 +92,12 @@ class Adf11(object):
         d['name'] = self.name
 
         # convert everything to SI + eV units
-        d['log_density'] += 6  # log(cm^-3) = log(10^6 m^-3) = 6 + log(m^-3)
-        d['log_coeff'] -= 6    # log(m^3/s) = log(10^-6 m^3/s) = -6 + log(m^3/s)
+        d['log_density'] += 6 # log(cm^-3) = log(10^6 m^-3) = 6 + log(m^-3)
         # the ecd (ionisation potential) class is already in eV units.
         # admittedly this a cluge to store these non-rate-coefficient
         # objects inside a RateCoefficient but it'll save a bunchton of code.
         if self.class_ != 'ecd':
-            d['log_coeff'] -= 6  # log(m^3/s) = log(10^-6 m^3/s) = -6 + log(m^3/s)
+            d['log_coeff'] -= 6 # log(m^3/s) = log(10^-6 m^3/s) = -6 + log(m^3/s)
         else:
             d['log_coeff'] = np.log10(d['log_coeff'][1:])
         return d
