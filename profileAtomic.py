@@ -4,7 +4,7 @@ Profiling the ionisation rate equation solver.
 import cProfile, pstats
 
 import numpy as np
-import atomic
+import atomic_neu.atomic as atomic
 
 ntimes, ntemperatures = 50, 50
 
