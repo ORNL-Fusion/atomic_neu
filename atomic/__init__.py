@@ -6,5 +6,6 @@ from .collisional_radiative import CollRadEquilibrium
 from .time_dependent_rates import RateEquations, RateEquationsWithDiffusion
 from .radiation import Radiation
 from .electron_cooling import ElectronCooling
+from .coronal import CoronalEquilibrium
 
 element = AtomicData.from_element
