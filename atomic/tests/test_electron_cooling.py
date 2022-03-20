@@ -1,5 +1,5 @@
 import unittest
-import atomic
+import atomic_neu.atomic as atomic
 import numpy as np
 
 class TestElectronCooling(unittest.TestCase):
@@ -16,17 +16,17 @@ class TestElectronCooling(unittest.TestCase):
 
     def test_keys(self):
         """Makes sure ElectronCooling has all the right keys"""
-        expected = ['ionisation', 'recombination', 
-                    'cx_power', 'line_power', 
+        expected = ['ionisation', 'recombination',
+                    'cx_power', 'line_power',
                     'continuum_power', 'rad_total',
                     'total']
         result = self.elc.power.keys()
-        self.assertItemsEqual(expected, result)
+        self.assertCountEqual(expected, result)
 
     def test_rad_total(self):
         """Tests that rad_total is what I think it is."""
         p = self.elc.power
-        expected = p['rad_total'] 
+        expected = p['rad_total']
         result = p['line_power'] + p['cx_power'] + p['continuum_power']
         np.testing.assert_allclose(expected, result)
 

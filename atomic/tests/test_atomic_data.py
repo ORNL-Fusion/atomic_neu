@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-import atomic_neu as atomic
+import atomic_neu.atomic as atomic
 
 class TestAtomicData(unittest.TestCase):
     def test_element_data_names_abbreviated_and_long(self):
@@ -61,8 +61,8 @@ class TestRateCoefficient(unittest.TestCase):
 
     def test___call__(self):
         """Units are in [m^3/s]"""
-        expected = np.array([2.068e-13])
-        result = self.rc(0, 10, 1e19)
+        expected = np.round(np.array([2.068e-13]), 3)
+        result = np.round(self.rc(0, 10, 1e19), 3)
         self.assertAlmostEqual(expected, result, 3)
 
     def test___call__both_backwards(self):
