@@ -11,7 +11,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-import atomic
+import atomic_neu.atomic as atomic
 
 ad = atomic.element('carbon')
 
