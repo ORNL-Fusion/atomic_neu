@@ -21,8 +21,8 @@ class Radiation(object):
         self.y = ionisation_stage_distribution
         self.atomic_data = ionisation_stage_distribution.atomic_data
 
-        self.temperature = self.y.temperature
-        self.electron_density = self.y.density
+        self.temperature = np.array(self.y.temperature)
+        self.electron_density = np.array(self.y.density)
 
         self.impurity_fraction = impurity_fraction
         self.neutral_fraction = neutral_fraction
