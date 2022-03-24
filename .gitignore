@@ -157,3 +157,4 @@ atomic/_xxdata_15.cpython-39-darwin.so
 build/src.macosx-11.6-x86_64-2.7
 build/temp.macosx-10.9-x86_64-3.9
 .DS_Store
+src/xxdata_11.tar.gz
