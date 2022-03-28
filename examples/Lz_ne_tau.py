@@ -66,7 +66,7 @@ class AnnotateRight(object):
         return xy_last
 
     def _annotate(self):
-        deltax = 0.01
+        deltax = 0.05
         for xy, text in zip(self.coordinates, self.texts):
             if xy[0] < 0.1:
                 ha = self.ha or 'right'
@@ -89,7 +89,7 @@ def annotate_lines(texts, **kwargs):
     AnnotateRight(ax.lines, texts, **kwargs)
 
 
-def time_dependent_z(solution, times):
+def time_dependent_power(solution, times):
     element = solution.atomic_data.element
     title = element + r' time dependent $\left<Z\right>$'
 
@@ -107,47 +107,48 @@ def time_dependent_z(solution, times):
     ax.set_title(title)
 
 
-def Lz_radiated_power(rate_equations, taus):
-    ax = plt.gca()
+if __name__ == '__main__':
+    times = np.logspace(-7, 0, 100)
+    temperature = np.logspace(np.log10(0.8), np.log10(100e3), 100)
+    density = 1e20
+    taus = np.logspace(14,18,3)/density
+    element_str = 'carbon'
+
+    rt = atomic.RateEquationsWithDiffusion(atomic.element(element_str))
+
+    plt.close()
+    plt.figure(1); plt.clf()
+    plt.xlim(xmin=1., xmax=100e3)
+    plt.ylim(ymin=1.e-35, ymax=1.e-30)
     linestyles = ['dashed', 'dotted', 'dashdot',
                   (0,(3,1)), (0,(1,1)), (0, (3, 1, 1, 1, 1, 1))]
+
+    ax = plt.gca()
+
     for i, tau in enumerate(taus):
         y = rt.solve(times, temperature, density, tau)
         rad = atomic.Radiation(y.abundances[-1])
         ax.loglog(temperature, rad.specific_power['total'],
                 color='black', ls=linestyles[i])
+        Zmean = np.mean(y.mean_charge(), 1)
 
     annotate_lines(['$10^{%d}$' % i for i in np.log10(taus * rt.density)])
 
     power_collrad = atomic.Radiation(y.y_collrad).specific_power['total']
-    ax.loglog(rate_equations.temperature, power_collrad, color='black')
+    ax.loglog(rt.temperature, power_collrad, color='black')
     AnnotateRight(ax.lines[-1:], ['$\infty$'])
-
-    element = 'Carbon'
-    title = element + r' Lz radiated power'
+    title = element_str + r' Lz radiated power'
     ax.set_xlabel(r'$T_\mathrm{e}\ \mathrm{(eV)}$')
-    ax.set_ylabel(r'$L_z [\mathrm{W m^3}]$')
+    ax.set_ylabel(r'$L_z [\mathrm{W-m^3}]$')
     ax.set_title(title)
 
-
-if __name__ == '__main__':
-    times = np.logspace(-7, 0, 100)
-    temperature = np.logspace(np.log10(0.8), np.log10(3e3), 100)
-    density = 1e19
-
-    rt = atomic.RateEquationsWithDiffusion(atomic.element('carbon'))
-
-    taus = np.logspace(13,18,6)/density
-
-    plt.figure(1); plt.clf()
-    plt.xlim(xmin=0.2, xmax=1e4)
-    plt.ylim(ymin=1e-35, ymax=1e-30)
-    Lz_radiated_power(rt, taus)
     plt.text(1.7e3,2.5e-31,r'$n_e \tau \; [\mathrm{m}^{-3} \, \mathrm{s}]$')
     plt.draw()
 
-#    plt.figure(2); plt.clf()
-#    time_dependent_power(y, taus)
-#    plt.draw()
+    plt.figure(2); plt.clf()
+    ax = plt.gca()
+    plt.xlim(xmin=1., xmax=1e4)
+    ax.semilogx(rt.temperature, y.y_collrad.mean_charge(), color='black')
+    plt.draw()
 
     plt.show()
