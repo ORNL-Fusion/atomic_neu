@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import atomic
+import atomic_neu.atomic as atomic
 
 from ensemble_average import time_dependent_power
 
