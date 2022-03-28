@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 
-import atomic
+import atomic_neu.atomic as atomic
 
 elementColors = [
     {'el': 'lithium', 'c': 'green'},
@@ -37,10 +37,10 @@ def netauplot(netau):
     """ Create a subplot for given ne * tau."""
     taus = netau / densities
 
-    for i in xrange(len(densities)):
+    for i in range(len(densities)):
         density = densities[i]
         tau = taus[i]
-        for e in elementColors: 
+        for e in elementColors:
             plotEps(atomic.element(e['el']), density, tau, e['c'], lw=linewidth[i])
 
     # make the titles and set boundaries
@@ -54,7 +54,7 @@ def netauplot(netau):
 
     # create the two legends
     lh = []
-    for e in elementColors: 
+    for e in elementColors:
         lh.append(mlines.Line2D([],[],
                 color=e['c'], label=atomic.element(e['el']).element))
 
@@ -62,7 +62,7 @@ def netauplot(netau):
     ax = plt.gca().add_artist(elements_legend)
 
     lh = []
-    for i in xrange(len(densities)):
+    for i in range(len(densities)):
         d = num2str(densities[i])
         tau = num2str(taus[i])
         lab = r'$n_e = 10^{' + d + r'},\; \tau = 10^{'+ tau + '}$'
@@ -74,7 +74,7 @@ def netauplot(netau):
 
 plt.close('all')
 
-for i in xrange(4):
+for i in range(4):
     plt.subplot(2,2,i+1)
     netauplot(np.power(10,14+i))
 
