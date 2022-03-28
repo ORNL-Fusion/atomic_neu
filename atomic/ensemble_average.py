@@ -130,7 +130,7 @@ def time_dependent_z_Plot(solution, times, ensemble_average=False, plotIT=True, 
         ax.set_title(title)
 
     if write2HDF:
-        import Misc.hickle.hickle as hkl
+        import hickle as hkl
         print('START: HDF5 file save')
         outDICT = {'temperature_arr': solution.temperature, 'coronal_Z': z_mean_coronal,
                    'Z_ntau_DIC': Z_mean_ntau}
