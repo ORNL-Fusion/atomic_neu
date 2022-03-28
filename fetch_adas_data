@@ -2,10 +2,11 @@
 import atomic_neu.adas as adas
 
 atomic_data = './adas_data'
-elements_years = [('hydrogen', 96), ('argon', 89), ('boron', 89), ('carbon', 96),
-                  ('neon', 96), ('silicon', 96), ('tungsten', 50),
-                  ('nitrogen', 96), ('lithium', 96), ('beryllium', 96),
-                  ('helium', 96), ('iron', 89)]
+# elements_years = [('hydrogen', 96), ('argon', 89), ('boron', 89), ('carbon', 96),
+#                   ('neon', 96), ('silicon', 96), ('tungsten', 50),
+#                   ('nitrogen', 96), ('lithium', 96), ('beryllium', 96),
+#                   ('helium', 96), ('iron', 89)]
+elements_years = [('oxygen', 96)]
 
 db = adas.OpenAdas()
 
