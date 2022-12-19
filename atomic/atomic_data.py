@@ -56,7 +56,11 @@ silicon_year = 96
 silicon_symbol = 'si'
 silicon_has_cx_power = False
 
-tungsten_year = 50
+# tungsten_year = 50
+# tungsten_symbol = 'w'
+# tungsten_has_cx_power = False
+
+tungsten_year = 89
 tungsten_symbol = 'w'
 tungsten_has_cx_power = False
 
