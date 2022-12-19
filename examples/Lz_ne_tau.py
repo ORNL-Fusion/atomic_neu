@@ -84,7 +84,7 @@ class AnnotateRight(object):
             va = self.va
 
             self.axes.annotate(text, xy, xycoords='axes fraction',
-                va=va, ha=ha, size='small')
+                               va=va, ha=ha, size='small')
 
 
 def annotate_lines(texts, **kwargs):
@@ -114,27 +114,28 @@ if __name__ == '__main__':
     times = np.logspace(-7, 0, 100)
     temperature = np.logspace(np.log10(1.), np.log10(85e3), 200)
     density = 1e20
-    taus = np.logspace(18,19.5,2)/density
+    taus = np.logspace(18, 19.5, 2) / density
 
     element_str = 'He'
     writeHDF = True
 
     temp_eV_chianti = np.logspace(np.log10(10.e3), np.log10(85e3), 100)
-    temp_K = temp_eV_chianti*asU.eV.to(asU.K, equivalencies=asU.temperature_energy())
-    rad_chianti=ch.radLoss(temp_K, eDensity=density*1e-6,elementList=[element_str],
-                           abundance='unity')
+    temp_K = temp_eV_chianti * asU.eV.to(asU.K, equivalencies=asU.temperature_energy())
+    rad_chianti = ch.radLoss(temp_K, eDensity=density * 1e-6, elementList=[element_str],
+                             abundance='unity')
 
     # convert from cgs unit to SI; so ergs-cm**3/s to W-m**3
-    rad_Wm3 = rad_chianti.RadLoss['rate']*1e-7*1e-6
+    rad_Wm3 = rad_chianti.RadLoss['rate'] * 1e-7 * 1e-6
 
     rt = atomic.RateEquationsWithDiffusion(atomic.element(element_str))
 
     plt.close()
-    plt.figure(1); plt.clf()
+    plt.figure(1)
+    plt.clf()
     plt.xlim(xmin=1., xmax=100e3)
     plt.ylim(ymin=1.e-37, ymax=1.e-30)
     linestyles = ['dashed', 'dotted', 'dashdot',
-                  (0,(3,1)), (0,(1,1)), (0, (3, 1, 1, 1, 1, 1))]
+                  (0, (3, 1)), (0, (1, 1)), (0, (3, 1, 1, 1, 1, 1))]
 
     ax = plt.gca()
 
@@ -142,7 +143,7 @@ if __name__ == '__main__':
         y = rt.solve(times, temperature, density, tau)
         rad = atomic.Radiation(y.abundances[-1])
         ax.loglog(temperature, rad.specific_power['total'],
-                color='black', ls=linestyles[i])
+                  color='black', ls=linestyles[i])
         Zmean = np.mean(y.mean_charge(), 1)
 
     annotate_lines(['$10^{%d}$' % i for i in np.log10(taus * rt.density)])
@@ -152,21 +153,22 @@ if __name__ == '__main__':
     power_collrad_trunc = power_collrad[ind_temp]
     temp_trunc = rt.temperature[ind_temp]
 
-    temp_neu = np.append(temp_trunc,temp_eV_chianti)
-    power_neu = np.append(power_collrad_trunc,rad_Wm3)
+    temp_neu = np.append(temp_trunc, temp_eV_chianti)
+    power_neu = np.append(power_collrad_trunc, rad_Wm3)
 
     ax.loglog(temp_neu, power_neu, color='black')
-    AnnotateRight(ax.lines[-1:], ['$\infty$'])
+    AnnotateRight(ax. lines[-1:], ['$\infty$'])
     # ax.loglog(temp_eV_chianti, rad_Wm3, marker='8', ms=1)
     title = element_str + r'$Radiated power loss, L_{rad}$'
     ax.set_xlabel(r'$T_\mathrm{e}\ \mathrm{(eV)}$')
     ax.set_ylabel(r'$L_z [\mathrm{W-m^3}]$')
     ax.set_title(title)
 
-    plt.text(1.7e3,2.5e-31,r'$n_e \tau \; [\mathrm{m}^{-3} \, \mathrm{s}]$')
+    plt.text(1.7e3, 2.5e-31, r'$n_e \tau \; [\mathrm{m}^{-3} \, \mathrm{s}]$')
     plt.draw()
 
-    plt.figure(2); plt.clf()
+    plt.figure(2)
+    plt.clf()
     ax = plt.gca()
     plt.xlim(xmin=1., xmax=1e4)
     ax.semilogx(rt.temperature, y.y_collrad.mean_charge(), color='black')
@@ -176,9 +178,9 @@ if __name__ == '__main__':
 
     if writeHDF:
         import hickle as hkl
-        fnam = 'radLoss_Zmean_'+element_str+'.h5'
-        dict={'temp_Z': rt.temperature,
-              'Z_mean': y.y_collrad.mean_charge(),
-              'RadLoss': power_neu,
-              'temp_rad': temp_neu}
-        hkl.dump(dict,fnam)
+        fnam = 'radLoss_Zmean_' + element_str + '.h5'
+        dict = {'temp_Z': rt.temperature,
+                'Z_mean': y.y_collrad.mean_charge(),
+                'RadLoss': power_neu,
+                'temp_rad': temp_neu}
+        hkl.dump(dict, fnam)
