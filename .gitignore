@@ -159,3 +159,4 @@ build/temp.macosx-10.9-x86_64-3.9
 .DS_Store
 src/xxdata_11.tar.gz
 build/temp.macosx-11.1-arm64-3.9/src
+build
